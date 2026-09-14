@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="titre_page_nouveau_plat">Nouveau plat - StockResto</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1 data-i18n="app_titre">StockResto</h1>
+    <div class="header-right">
+      <nav>
+        <a href="index.html" data-i18n="nav_stock">Stock</a>
+        <a href="vendre.html" data-i18n="nav_vendre">Vendre un plat</a>
+        <a href="nouvel-ingredient.html" data-i18n="nav_nouvel_ingredient">Nouvel ingrédient</a>
+        <a href="nouveau-plat.html" class="active" data-i18n="nav_nouveau_plat">Nouveau plat</a>
+        <a href="nouvelle-recette.html" data-i18n="nav_nouvelle_recette">Nouvelle recette</a>
+      </nav>
+      <select id="langue-select" aria-label="Langue">
+        <option value="fr">🇫🇷 Français</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="ar">🇸🇦 العربية</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <h2 data-i18n="titre_nouveau_plat">Ajouter un plat</h2>
+    <form id="form-plat">
+      <label for="nom" data-i18n="label_nom">Nom</label>
+      <input type="text" id="nom" required>
+
+      <label for="categorie" data-i18n="label_categorie">Catégorie</label>
+      <select id="categorie" required>
+        <option value="" data-i18n="chargement_categories">Chargement des catégories...</option>
+      </select>
+
+      <label for="nouvelle-categorie" id="label-nouvelle-categorie" hidden data-i18n="label_nouvelle_categorie">Nouvelle catégorie</label>
+      <input type="text" id="nouvelle-categorie" hidden>
+
+      <label for="prix_vente" data-i18n="label_prix_vente">Prix de vente (DH)</label>
+      <input type="number" id="prix_vente" step="0.01" min="0" required>
+
+      <button type="submit" id="btn-ajouter" data-i18n="bouton_ajouter_plat">Ajouter le plat</button>
+    </form>
+
+    <div id="resultat"></div>
+  </main>
+
+  <script type="module" src="nouveau-plat.js"></script>
+</body>
+</html>

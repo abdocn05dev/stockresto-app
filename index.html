@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="titre_page_stock">Stock des ingrédients - StockResto</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1 data-i18n="app_titre">StockResto</h1>
+    <div class="header-right">
+      <nav>
+        <a href="index.html" class="active" data-i18n="nav_stock">Stock</a>
+        <a href="vendre.html" data-i18n="nav_vendre">Vendre un plat</a>
+        <a href="nouvel-ingredient.html" data-i18n="nav_nouvel_ingredient">Nouvel ingrédient</a>
+        <a href="nouveau-plat.html" data-i18n="nav_nouveau_plat">Nouveau plat</a>
+        <a href="nouvelle-recette.html" data-i18n="nav_nouvelle_recette">Nouvelle recette</a>
+      </nav>
+      <select id="langue-select" aria-label="Langue">
+        <option value="fr">🇫🇷 Français</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="ar">🇸🇦 العربية</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <h2 data-i18n="titre_stock">Ingrédients en stock</h2>
+    <p id="message"></p>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="colonne_ingredient">Ingrédient</th>
+          <th data-i18n="colonne_stock_actuel">Stock actuel</th>
+          <th data-i18n="colonne_seuil_minimum">Seuil minimum</th>
+          <th data-i18n="colonne_statut">Statut</th>
+        </tr>
+      </thead>
+      <tbody id="stock-body">
+        <tr><td colspan="4" data-i18n="chargement">Chargement...</td></tr>
+      </tbody>
+    </table>
+  </main>
+
+  <script type="module" src="stock.js"></script>
+</body>
+</html>
