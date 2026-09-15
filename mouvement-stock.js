@@ -1,15 +1,10 @@
 import { supabase } from './supabase.js'
 
-// Sens du mouvement selon le motif choisi : + pour un ajout au stock, - pour un retrait.
+// Sens du mouvement selon le motif : + pour un ajout au stock, - pour un retrait.
 export const SIGNES_MOTIF = {
-  reapprovisionnement: 1,
-  correction_ajout: 1,
-  correction_retrait: -1,
-  perte: -1,
+  ajout: 1,
+  retrait: -1,
 }
-
-export const MOTIFS_AJOUT = ['reapprovisionnement', 'correction_ajout']
-export const MOTIFS_RETRAIT = ['correction_retrait', 'perte']
 
 // Enregistre un mouvement de stock : met à jour ingredients.stock_actuel et trace le mouvement.
 // Retourne un résultat structuré (comme vendrePlat dans vendre.js) pour que l'UI décide de l'affichage.

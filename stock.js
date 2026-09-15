@@ -1,7 +1,7 @@
 import { supabase } from './supabase.js'
 import { formatNombre } from './format.js'
 import { t, libelleUnite } from './i18n.js'
-import { enregistrerMouvementStock, MOTIFS_AJOUT, MOTIFS_RETRAIT } from './mouvement-stock.js'
+import { enregistrerMouvementStock } from './mouvement-stock.js'
 
 // En dessous de la moitié du seuil minimum -> critique. Entre la moitié et le seuil -> bas.
 // Ajuste ce ratio si tu veux une alerte "critique" plus ou moins sensible.
@@ -9,10 +9,12 @@ const RATIO_CRITIQUE = 0.5
 
 let dernierIngredients = []
 let ingredientCourant = null
+// Le motif enregistré découle du bouton cliqué : "ajout" pour +, "retrait" pour -.
+let motifCourant = null
 
 const modale = document.getElementById('modale-mouvement')
+const modaleTitre = document.getElementById('modale-titre')
 const modaleNomIngredient = document.getElementById('modale-ingredient-nom')
-const modaleSelectMotif = document.getElementById('modale-motif')
 const modaleInputQuantite = document.getElementById('modale-quantite')
 const modaleResultat = document.getElementById('modale-resultat')
 const formModale = document.getElementById('form-modale-mouvement')
@@ -71,12 +73,15 @@ async function chargerIngredients() {
   afficherIngredients(dernierIngredients)
 }
 
-function ouvrirModale(ingredient, sens) {
+function ouvrirModale(ingredient, motif) {
   ingredientCourant = ingredient
+  motifCourant = motif
   modaleNomIngredient.textContent = ingredient.nom
 
-  const motifs = sens === 'ajout' ? MOTIFS_AJOUT : MOTIFS_RETRAIT
-  modaleSelectMotif.innerHTML = motifs.map((motif) => `<option value="${motif}">${t('motif_' + motif)}</option>`).join('')
+  // On pose la clé i18n sur le titre : un changement de langue le retraduira tout seul.
+  const cleTitre = motif === 'ajout' ? 'titre_ajouter_stock' : 'titre_retirer_stock'
+  modaleTitre.dataset.i18n = cleTitre
+  modaleTitre.textContent = t(cleTitre)
 
   modaleInputQuantite.value = ''
   modaleResultat.innerHTML = ''
@@ -86,6 +91,7 @@ function ouvrirModale(ingredient, sens) {
 function fermerModale() {
   modale.hidden = true
   ingredientCourant = null
+  motifCourant = null
 }
 
 document.getElementById('stock-body').addEventListener('click', (event) => {
@@ -108,14 +114,13 @@ formModale.addEventListener('submit', async (event) => {
   event.preventDefault()
   if (!ingredientCourant) return
 
-  const motif = modaleSelectMotif.value
   const quantiteSaisie = Number(modaleInputQuantite.value)
 
   boutonConfirmer.disabled = true
   boutonConfirmer.textContent = t('bouton_confirmation_en_cours')
   modaleResultat.innerHTML = ''
 
-  const resultat = await enregistrerMouvementStock(ingredientCourant, motif, quantiteSaisie)
+  const resultat = await enregistrerMouvementStock(ingredientCourant, motifCourant, quantiteSaisie)
 
   if (!resultat.succes) {
     const message =

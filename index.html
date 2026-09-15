@@ -47,15 +47,12 @@
 
   <div id="modale-mouvement" class="modale-overlay" hidden>
     <div class="modale" role="dialog" aria-modal="true" aria-labelledby="modale-titre">
-      <h3 id="modale-titre" data-i18n="titre_modifier_stock">Modifier le stock</h3>
+      <h3 id="modale-titre" data-i18n="titre_ajouter_stock">Ajouter du stock</h3>
       <p>
         <span data-i18n="label_ingredient">Ingrédient</span> :
         <strong id="modale-ingredient-nom"></strong>
       </p>
       <form id="form-modale-mouvement">
-        <label for="modale-motif" data-i18n="label_type_mouvement">Type de mouvement</label>
-        <select id="modale-motif" required></select>
-
         <label for="modale-quantite" data-i18n="label_quantite">Quantité</label>
         <input type="number" id="modale-quantite" step="0.01" min="0.01" required>
 
