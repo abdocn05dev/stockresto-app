@@ -1,12 +1,23 @@
 import { supabase } from './supabase.js'
 import { formatNombre } from './format.js'
 import { t, libelleUnite } from './i18n.js'
+import { enregistrerMouvementStock, MOTIFS_AJOUT, MOTIFS_RETRAIT } from './mouvement-stock.js'
 
 // En dessous de la moitié du seuil minimum -> critique. Entre la moitié et le seuil -> bas.
 // Ajuste ce ratio si tu veux une alerte "critique" plus ou moins sensible.
 const RATIO_CRITIQUE = 0.5
 
 let dernierIngredients = []
+let ingredientCourant = null
+
+const modale = document.getElementById('modale-mouvement')
+const modaleNomIngredient = document.getElementById('modale-ingredient-nom')
+const modaleSelectMotif = document.getElementById('modale-motif')
+const modaleInputQuantite = document.getElementById('modale-quantite')
+const modaleResultat = document.getElementById('modale-resultat')
+const formModale = document.getElementById('form-modale-mouvement')
+const boutonConfirmer = document.getElementById('btn-modale-confirmer')
+const boutonAnnuler = document.getElementById('btn-modale-annuler')
 
 function getStatut(stockActuel, seuilMinimum) {
   if (stockActuel < seuilMinimum * RATIO_CRITIQUE) {
@@ -30,6 +41,10 @@ function afficherIngredients(ingredients) {
       <td>${formatNombre(ingredient.stock_actuel)} ${libelleUnite(ingredient.unite)}</td>
       <td>${formatNombre(ingredient.seuil_minimum)} ${libelleUnite(ingredient.unite)}</td>
       <td><span class="badge ${statut.classe}">${statut.label}</span></td>
+      <td>
+        <button type="button" class="bouton-icone bouton-ajout" data-id="${ingredient.id}" aria-label="+">+</button>
+        <button type="button" class="bouton-icone bouton-retrait" data-id="${ingredient.id}" aria-label="-">−</button>
+      </td>
     `
     corps.appendChild(ligne)
   }
@@ -55,6 +70,75 @@ async function chargerIngredients() {
   dernierIngredients = ingredients
   afficherIngredients(dernierIngredients)
 }
+
+function ouvrirModale(ingredient, sens) {
+  ingredientCourant = ingredient
+  modaleNomIngredient.textContent = ingredient.nom
+
+  const motifs = sens === 'ajout' ? MOTIFS_AJOUT : MOTIFS_RETRAIT
+  modaleSelectMotif.innerHTML = motifs.map((motif) => `<option value="${motif}">${t('motif_' + motif)}</option>`).join('')
+
+  modaleInputQuantite.value = ''
+  modaleResultat.innerHTML = ''
+  modale.hidden = false
+}
+
+function fermerModale() {
+  modale.hidden = true
+  ingredientCourant = null
+}
+
+document.getElementById('stock-body').addEventListener('click', (event) => {
+  const bouton = event.target.closest('.bouton-ajout, .bouton-retrait')
+  if (!bouton) return
+
+  const ingredient = dernierIngredients.find((i) => i.id === Number(bouton.dataset.id))
+  if (!ingredient) return
+
+  ouvrirModale(ingredient, bouton.classList.contains('bouton-ajout') ? 'ajout' : 'retrait')
+})
+
+boutonAnnuler.addEventListener('click', fermerModale)
+
+modale.addEventListener('click', (event) => {
+  if (event.target === modale) fermerModale()
+})
+
+formModale.addEventListener('submit', async (event) => {
+  event.preventDefault()
+  if (!ingredientCourant) return
+
+  const motif = modaleSelectMotif.value
+  const quantiteSaisie = Number(modaleInputQuantite.value)
+
+  boutonConfirmer.disabled = true
+  boutonConfirmer.textContent = t('bouton_confirmation_en_cours')
+  modaleResultat.innerHTML = ''
+
+  const resultat = await enregistrerMouvementStock(ingredientCourant, motif, quantiteSaisie)
+
+  if (!resultat.succes) {
+    const message =
+      resultat.erreurCode === 'stock_negatif'
+        ? t('erreur_stock_negatif', {
+            ingredient: ingredientCourant.nom,
+            stock: formatNombre(resultat.avant),
+            unite: libelleUnite(ingredientCourant.unite),
+          })
+        : `${t('erreur_prefixe')} ${resultat.erreurMessage}`
+    modaleResultat.innerHTML = `<p class="erreur">${message}</p>`
+    boutonConfirmer.disabled = false
+    boutonConfirmer.textContent = t('bouton_confirmer')
+    return
+  }
+
+  ingredientCourant.stock_actuel = resultat.apres
+  afficherIngredients(dernierIngredients)
+  fermerModale()
+
+  boutonConfirmer.disabled = false
+  boutonConfirmer.textContent = t('bouton_confirmer')
+})
 
 // Un changement de langue ne nécessite pas un nouvel appel réseau : on réaffiche juste les mêmes données.
 window.addEventListener('langue-changee', () => afficherIngredients(dernierIngredients))
