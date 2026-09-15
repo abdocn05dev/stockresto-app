@@ -25,7 +25,7 @@ async function chargerPlats() {
 }
 
 function formaterAlerte(alerte) {
-  if (alerte.type === 'seuil_minimum') return t('alerte_seuil_minimum', { ingredient: alerte.ingredient })
+  if (alerte.type === 'seuil_minimum') return t('alerte_stock_bas', { ingredient: alerte.ingredient })
   if (alerte.type === 'erreur_ingredient') return t('alerte_erreur_ingredient', { message: alerte.message })
   if (alerte.type === 'erreur_stock') return t('alerte_erreur_stock', { ingredient: alerte.ingredient, message: alerte.message })
   return ''
@@ -41,6 +41,10 @@ function afficherResultat(resultat) {
     return
   }
 
+  const alertesHtml = resultat.alertes.length
+    ? `<div class="alerte">${resultat.alertes.map((a) => `<p>⚠️ ${formaterAlerte(a)}</p>`).join('')}</div>`
+    : ''
+
   const lignesHtml = resultat.lignes
     .map(
       (ligne) =>
@@ -48,15 +52,23 @@ function afficherResultat(resultat) {
     )
     .join('')
 
-  const alertesHtml = resultat.alertes.length
-    ? `<div class="alerte">${resultat.alertes.map((a) => `<p>⚠️ ${formaterAlerte(a)}</p>`).join('')}</div>`
-    : ''
-
   resultatDiv.innerHTML = `
-    <p class="succes">${t('vente_enregistree')}</p>
-    <ul>${lignesHtml}</ul>
+    <div class="succes-badge">
+      <span class="succes-badge-icone" aria-hidden="true">✓</span>
+      <span>${t('vente_enregistree')}</span>
+    </div>
     ${alertesHtml}
+    <button type="button" class="lien-detail" id="lien-detail">${t('lien_voir_detail')}</button>
+    <ul id="detail-lignes" hidden>${lignesHtml}</ul>
   `
+
+  const lienDetail = document.getElementById('lien-detail')
+  const detailLignes = document.getElementById('detail-lignes')
+  lienDetail.addEventListener('click', () => {
+    const vaSAfficher = detailLignes.hidden
+    detailLignes.hidden = !vaSAfficher
+    lienDetail.textContent = t(vaSAfficher ? 'lien_masquer_detail' : 'lien_voir_detail')
+  })
 }
 
 form.addEventListener('submit', async (event) => {
