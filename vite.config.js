@@ -7,6 +7,7 @@ export default defineConfig({
       input: {
         stock: resolve(import.meta.dirname, 'index.html'),
         vendre: resolve(import.meta.dirname, 'vendre.html'),
+        modifierStock: resolve(import.meta.dirname, 'modifier-stock.html'),
         nouvelIngredient: resolve(import.meta.dirname, 'nouvel-ingredient.html'),
         nouveauPlat: resolve(import.meta.dirname, 'nouveau-plat.html'),
         nouvelleRecette: resolve(import.meta.dirname, 'nouvelle-recette.html'),
