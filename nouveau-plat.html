@@ -47,7 +47,56 @@
     </form>
 
     <div id="resultat"></div>
+
+    <h2 data-i18n="titre_plats_existants">Plats existants</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="label_nom">Nom</th>
+          <th data-i18n="label_categorie">Catégorie</th>
+          <th data-i18n="label_prix_vente">Prix de vente (DH)</th>
+          <th data-i18n="colonne_actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="plats-body">
+        <tr><td colspan="4" data-i18n="chargement">Chargement...</td></tr>
+      </tbody>
+    </table>
   </main>
+
+  <div id="modale-edition-plat" class="modale-overlay" hidden>
+    <div class="modale" role="dialog" aria-modal="true" aria-labelledby="modale-edition-plat-titre">
+      <h3 id="modale-edition-plat-titre" data-i18n="titre_modifier_plat">Modifier le plat</h3>
+      <form id="form-modale-edition-plat">
+        <label for="edition-plat-nom" data-i18n="label_nom">Nom</label>
+        <input type="text" id="edition-plat-nom" required>
+
+        <label for="edition-plat-categorie" data-i18n="label_categorie">Catégorie</label>
+        <select id="edition-plat-categorie" required></select>
+
+        <label for="edition-plat-nouvelle-categorie" id="label-edition-plat-nouvelle-categorie" hidden data-i18n="label_nouvelle_categorie">Nouvelle catégorie</label>
+        <input type="text" id="edition-plat-nouvelle-categorie" hidden>
+
+        <label for="edition-plat-prix" data-i18n="label_prix_vente">Prix de vente (DH)</label>
+        <input type="number" id="edition-plat-prix" step="0.01" min="0" required>
+
+        <div id="modale-edition-plat-resultat"></div>
+
+        <div class="modale-actions">
+          <button type="button" id="btn-edition-plat-annuler" class="bouton-secondaire" data-i18n="bouton_annuler">Annuler</button>
+          <button type="submit" id="btn-edition-plat-enregistrer" data-i18n="bouton_enregistrer">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modale-suppression-plat" class="modale-overlay" hidden>
+    <div class="modale" role="dialog" aria-modal="true" aria-labelledby="modale-suppression-plat-titre">
+      <h3 id="modale-suppression-plat-titre" data-i18n="titre_supprimer_plat">Supprimer le plat</h3>
+      <div id="modale-suppression-plat-contenu"></div>
+      <div class="modale-actions" id="modale-suppression-plat-actions"></div>
+    </div>
+  </div>
 
   <script type="module" src="nouveau-plat.js"></script>
 </body>
