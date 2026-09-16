@@ -382,6 +382,36 @@ button.lien-detail:hover {
   max-width: 380px;
 }
 
+.modale-large {
+  max-width: 560px;
+}
+
+#edition-recette-lignes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ligne-recette {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ligne-recette .edition-ligne-ingredient {
+  flex: 2;
+  min-width: 0;
+}
+
+.ligne-recette .edition-ligne-quantite {
+  flex: 1;
+  min-width: 0;
+}
+
+.ligne-recette .edition-ligne-unite {
+  flex: 0 0 4.5rem;
+}
+
 .modale h3 {
   margin: 0 0 0.75rem;
   color: var(--navy);

@@ -49,7 +49,50 @@
     </form>
 
     <div id="resultat"></div>
+
+    <h2 data-i18n="titre_recettes_existantes">Recettes existantes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="label_plat">Plat</th>
+          <th data-i18n="colonne_ingredients">Ingrédients</th>
+          <th data-i18n="colonne_actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="recettes-body">
+        <tr><td colspan="3" data-i18n="chargement">Chargement...</td></tr>
+      </tbody>
+    </table>
   </main>
+
+  <div id="modale-edition-recette" class="modale-overlay" hidden>
+    <div class="modale modale-large" role="dialog" aria-modal="true" aria-labelledby="modale-edition-recette-titre">
+      <h3 id="modale-edition-recette-titre" data-i18n="titre_modifier_recette">Modifier la recette</h3>
+      <p>
+        <span data-i18n="label_plat">Plat</span> :
+        <strong id="edition-recette-plat-nom"></strong>
+      </p>
+      <form id="form-modale-edition-recette">
+        <div id="edition-recette-lignes"></div>
+        <button type="button" id="btn-edition-recette-ajouter-ligne" class="bouton-secondaire" data-i18n="bouton_ajouter_ligne">+ Ajouter un ingrédient</button>
+
+        <div id="modale-edition-recette-resultat"></div>
+
+        <div class="modale-actions">
+          <button type="button" id="btn-edition-recette-annuler" class="bouton-secondaire" data-i18n="bouton_annuler">Annuler</button>
+          <button type="submit" id="btn-edition-recette-enregistrer" data-i18n="bouton_enregistrer">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modale-suppression-recette" class="modale-overlay" hidden>
+    <div class="modale" role="dialog" aria-modal="true" aria-labelledby="modale-suppression-recette-titre">
+      <h3 id="modale-suppression-recette-titre" data-i18n="titre_supprimer_recette">Supprimer la recette</h3>
+      <div id="modale-suppression-recette-contenu"></div>
+      <div class="modale-actions" id="modale-suppression-recette-actions"></div>
+    </div>
+  </div>
 
   <script type="module" src="nouvelle-recette.js"></script>
 </body>

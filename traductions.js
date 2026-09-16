@@ -88,6 +88,13 @@ export const TRADUCTIONS = {
     chargement_ingredients: 'Chargement des ingrédients...',
     bouton_ajouter_recette: 'Ajouter à la recette',
     recette_ajoutee: 'Ingrédient ajouté à la recette.',
+    titre_recettes_existantes: 'Recettes existantes',
+    colonne_ingredients: 'Ingrédients',
+    titre_modifier_recette: 'Modifier la recette',
+    titre_supprimer_recette: 'Supprimer la recette',
+    bouton_ajouter_ligne: '+ Ajouter un ingrédient',
+    confirmation_suppression_recette: 'Êtes-vous sûr de vouloir supprimer la recette de {plat} ?',
+    erreur_ligne_recette_invalide: 'Chaque ligne doit avoir un ingrédient et une quantité supérieure à 0.',
   },
 
   en: {
@@ -177,6 +184,13 @@ export const TRADUCTIONS = {
     chargement_ingredients: 'Loading ingredients...',
     bouton_ajouter_recette: 'Add to Recipe',
     recette_ajoutee: 'Ingredient added to the recipe.',
+    titre_recettes_existantes: 'Existing Recipes',
+    colonne_ingredients: 'Ingredients',
+    titre_modifier_recette: 'Edit Recipe',
+    titre_supprimer_recette: 'Delete Recipe',
+    bouton_ajouter_ligne: '+ Add an ingredient',
+    confirmation_suppression_recette: 'Are you sure you want to delete the recipe for {plat}?',
+    erreur_ligne_recette_invalide: 'Each line must have an ingredient and a quantity greater than 0.',
   },
 
   es: {
@@ -266,6 +280,13 @@ export const TRADUCTIONS = {
     chargement_ingredients: 'Cargando ingredientes...',
     bouton_ajouter_recette: 'Añadir a la Receta',
     recette_ajoutee: 'Ingrediente añadido a la receta.',
+    titre_recettes_existantes: 'Recetas Existentes',
+    colonne_ingredients: 'Ingredientes',
+    titre_modifier_recette: 'Editar Receta',
+    titre_supprimer_recette: 'Eliminar Receta',
+    bouton_ajouter_ligne: '+ Añadir un ingrediente',
+    confirmation_suppression_recette: '¿Seguro que quieres eliminar la receta de {plat}?',
+    erreur_ligne_recette_invalide: 'Cada línea debe tener un ingrediente y una cantidad mayor que 0.',
   },
 
   ar: {
@@ -355,5 +376,12 @@ export const TRADUCTIONS = {
     chargement_ingredients: 'جارٍ تحميل المكوّنات...',
     bouton_ajouter_recette: 'إضافة إلى الوصفة',
     recette_ajoutee: 'تمت إضافة المكوّن إلى الوصفة.',
+    titre_recettes_existantes: 'الوصفات الموجودة',
+    colonne_ingredients: 'المكوّنات',
+    titre_modifier_recette: 'تعديل الوصفة',
+    titre_supprimer_recette: 'حذف الوصفة',
+    bouton_ajouter_ligne: '+ إضافة مكوّن',
+    confirmation_suppression_recette: 'هل أنت متأكد من حذف وصفة {plat}؟',
+    erreur_ligne_recette_invalide: 'يجب أن يحتوي كل سطر على مكوّن وكمية أكبر من 0.',
   },
 }
