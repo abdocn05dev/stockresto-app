@@ -66,6 +66,43 @@
     </div>
   </div>
 
+  <div id="modale-edition" class="modale-overlay" hidden>
+    <div class="modale" role="dialog" aria-modal="true" aria-labelledby="modale-edition-titre">
+      <h3 id="modale-edition-titre" data-i18n="titre_modifier_ingredient">Modifier l'ingrédient</h3>
+      <form id="form-modale-edition">
+        <label for="edition-nom" data-i18n="label_nom">Nom</label>
+        <input type="text" id="edition-nom" required>
+
+        <label for="edition-unite" data-i18n="label_unite">Unité</label>
+        <select id="edition-unite" required>
+          <option value="kg">kg</option>
+          <option value="g">g</option>
+          <option value="L">L</option>
+          <option value="ml">ml</option>
+          <option value="unite" data-i18n="unite_piece">unité</option>
+        </select>
+
+        <label for="edition-seuil" data-i18n="colonne_seuil_minimum">Seuil minimum</label>
+        <input type="number" id="edition-seuil" step="0.01" min="0" required>
+
+        <div id="modale-edition-resultat"></div>
+
+        <div class="modale-actions">
+          <button type="button" id="btn-edition-annuler" class="bouton-secondaire" data-i18n="bouton_annuler">Annuler</button>
+          <button type="submit" id="btn-edition-enregistrer" data-i18n="bouton_enregistrer">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modale-suppression" class="modale-overlay" hidden>
+    <div class="modale" role="dialog" aria-modal="true" aria-labelledby="modale-suppression-titre">
+      <h3 id="modale-suppression-titre" data-i18n="titre_supprimer_ingredient">Supprimer l'ingrédient</h3>
+      <div id="modale-suppression-contenu"></div>
+      <div class="modale-actions" id="modale-suppression-actions"></div>
+    </div>
+  </div>
+
   <script type="module" src="stock.js"></script>
 </body>
 </html>

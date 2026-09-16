@@ -204,6 +204,30 @@ tbody tr:hover {
   border-color: var(--red-text);
 }
 
+.bouton-modifier {
+  background: var(--bg);
+  color: var(--navy);
+  border: 1px solid var(--border-strong);
+}
+
+.bouton-modifier:hover:not(:disabled) {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.bouton-supprimer {
+  background: var(--red-bg);
+  color: var(--red-text);
+  border: 1px solid var(--red-bg);
+}
+
+.bouton-supprimer:hover:not(:disabled) {
+  background: var(--red-text);
+  color: #fff;
+  border-color: var(--red-text);
+}
+
 form {
   background: var(--surface);
   padding: 1.5rem;
@@ -386,4 +410,14 @@ button.lien-detail:hover {
 .bouton-secondaire:hover:not(:disabled) {
   background: var(--bg);
   border-color: var(--border-strong);
+}
+
+.bouton-danger {
+  background: var(--red-text);
+  border: 1px solid var(--red-text);
+}
+
+.bouton-danger:hover:not(:disabled) {
+  background: #7a2620;
+  border-color: #7a2620;
 }
