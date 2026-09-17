@@ -46,65 +46,111 @@ export async function vendrePlat(platId) {
 
   console.log(`Recette trouvée : ${recette.length} ingrédients à déduire`)
 
-  // Trace de la vente au niveau du plat (mouvements_stock ne connaît que les ingrédients) :
-  // c'est cette table que lit la page Statistiques pour compter les ventes par plat.
-  // Non bloquant, comme les inserts de mouvements_stock plus bas.
-  const { error: erreurVente } = await supabase.from('ventes').insert({ plat_id: platId })
-  if (erreurVente) {
-    console.log('Erreur en enregistrant la vente:', erreurVente)
+  // Un seul aller-retour pour tous les ingrédients de la recette, au lieu d'un SELECT par ligne :
+  // c'était la principale source de lenteur (jusqu'à 3 requêtes séquentielles par ingrédient).
+  const ingredientIds = [...new Set(recette.map((ligne) => ligne.ingredient_id))]
+  const { data: ingredients, error: erreurIngredients } = await supabase
+    .from('ingredients')
+    .select('id, nom, unite, prix_achat, stock_actuel, seuil_minimum')
+    .in('id', ingredientIds)
+
+  if (erreurIngredients) {
+    console.log('Erreur en cherchant les ingrédients:', erreurIngredients)
+    resultat.succes = false
+    resultat.erreurCode = 'erreur_supabase'
+    resultat.erreurMessage = erreurIngredients.message
+    return resultat
   }
 
-  for (const ligne of recette) {
-    const { data: ingredient, error: erreurIngredient } = await supabase
-      .from('ingredients')
-      .select('nom, unite, stock_actuel, seuil_minimum')
-      .eq('id', ligne.ingredient_id)
-      .single()
+  const ingredientParId = new Map(ingredients.map((ingredient) => [ingredient.id, ingredient]))
 
-    if (erreurIngredient) {
-      console.log("Erreur en cherchant l'ingrédient:", erreurIngredient)
-      resultat.alertes.push({ type: 'erreur_ingredient', message: erreurIngredient.message })
+  // Regroupe par ingrédient (une recette peut en théorie lister deux fois le même ingrédient)
+  // pour n'avoir qu'une seule déduction — donc une seule ligne d'upsert — par ingrédient.
+  const quantiteConvertieParIngredient = new Map()
+  for (const ligne of recette) {
+    const ingredient = ingredientParId.get(ligne.ingredient_id)
+    if (!ingredient) {
+      console.log(`Ingrédient #${ligne.ingredient_id} introuvable`)
+      resultat.alertes.push({ type: 'erreur_ingredient', message: `Ingrédient #${ligne.ingredient_id} introuvable` })
       continue
     }
-
-    // Conversion de la quantité de la recette vers l'unité du stock
     const quantiteConvertie = convertirVersUniteStock(ligne.quantite, ligne.unite, ingredient.unite)
-    const nouveauStock = ingredient.stock_actuel - quantiteConvertie
+    quantiteConvertieParIngredient.set(
+      ligne.ingredient_id,
+      (quantiteConvertieParIngredient.get(ligne.ingredient_id) ?? 0) + quantiteConvertie,
+    )
+  }
 
-    const { error: erreurUpdate } = await supabase
-      .from('ingredients')
-      .update({ stock_actuel: nouveauStock })
-      .eq('id', ligne.ingredient_id)
+  const deductions = [...quantiteConvertieParIngredient.entries()].map(([ingredientId, quantiteConvertie]) => {
+    const ingredient = ingredientParId.get(ingredientId)
+    return { ingredient, quantiteConvertie, nouveauStock: ingredient.stock_actuel - quantiteConvertie }
+  })
+
+  // Vérifié AVANT toute écriture : une vente est tout ou rien, elle ne doit pas laisser
+  // certains ingrédients déduits et d'autres non si l'un d'eux manque de stock.
+  const enRupture = deductions.find((deduction) => deduction.nouveauStock < 0)
+  if (enRupture) {
+    console.log(`⚠️ Stock insuffisant pour ${enRupture.ingredient.nom}`)
+    resultat.succes = false
+    resultat.erreurCode = 'stock_negatif'
+    resultat.ingredient = enRupture.ingredient.nom
+    resultat.stock = enRupture.ingredient.stock_actuel
+    resultat.unite = enRupture.ingredient.unite
+    return resultat
+  }
+
+  if (deductions.length > 0) {
+    // upsert plutôt que N update : une seule requête où chaque ingrédient porte sa propre
+    // nouvelle valeur. Postgres valide les contraintes NOT NULL de toute la ligne même pour un
+    // conflit qui finit en UPDATE (INSERT ... ON CONFLICT DO UPDATE) : on doit donc renvoyer les
+    // colonnes obligatoires telles quelles, pas seulement stock_actuel.
+    const { error: erreurUpdate } = await supabase.from('ingredients').upsert(
+      deductions.map((d) => ({
+        id: d.ingredient.id,
+        nom: d.ingredient.nom,
+        unite: d.ingredient.unite,
+        prix_achat: d.ingredient.prix_achat,
+        seuil_minimum: d.ingredient.seuil_minimum,
+        stock_actuel: d.nouveauStock,
+      })),
+    )
 
     if (erreurUpdate) {
       console.log('Erreur en mettant à jour le stock:', erreurUpdate)
-      resultat.alertes.push({ type: 'erreur_stock', ingredient: ingredient.nom, message: erreurUpdate.message })
-      continue
+      resultat.succes = false
+      resultat.erreurCode = 'erreur_supabase'
+      resultat.erreurMessage = erreurUpdate.message
+      return resultat
     }
 
-    console.log(`${ingredient.nom}: ${ingredient.stock_actuel} → ${nouveauStock} ${ingredient.unite}`)
+    for (const { ingredient, nouveauStock } of deductions) {
+      console.log(`${ingredient.nom}: ${ingredient.stock_actuel} → ${nouveauStock} ${ingredient.unite}`)
+      resultat.lignes.push({ nom: ingredient.nom, avant: ingredient.stock_actuel, apres: nouveauStock, unite: ingredient.unite })
 
-    // Trace du mouvement pour l'historique. Non bloquant : une vente ne doit pas échouer
-    // si cette seule écriture secondaire rate (l'ingrédient est déjà correctement déduit).
-    const { error: erreurMouvement } = await supabase
-      .from('mouvements_stock')
-      .insert({ ingredient_id: ligne.ingredient_id, quantite: -quantiteConvertie, motif: 'vente' })
-
-    if (erreurMouvement) {
-      console.log("Erreur en enregistrant le mouvement d'historique:", erreurMouvement)
+      if (nouveauStock < ingredient.seuil_minimum) {
+        console.log(`⚠️ ALERTE : ${ingredient.nom} est sous le seuil minimum !`)
+        resultat.alertes.push({ type: 'seuil_minimum', ingredient: ingredient.nom, unite: ingredient.unite })
+      }
     }
+  }
 
-    resultat.lignes.push({
-      nom: ingredient.nom,
-      avant: ingredient.stock_actuel,
-      apres: nouveauStock,
-      unite: ingredient.unite,
-    })
+  // Traces secondaires (historique + statistiques), non bloquantes : le stock est déjà
+  // correctement déduit, une vente ne doit pas échouer si l'une de ces deux écritures rate.
+  // Indépendantes l'une de l'autre -> lancées en parallèle plutôt qu'en séquence.
+  const [{ error: erreurMouvements }, { error: erreurVente }] = await Promise.all([
+    deductions.length > 0
+      ? supabase
+          .from('mouvements_stock')
+          .insert(deductions.map((d) => ({ ingredient_id: d.ingredient.id, quantite: -d.quantiteConvertie, motif: 'vente' })))
+      : Promise.resolve({ error: null }),
+    supabase.from('ventes').insert({ plat_id: platId }),
+  ])
 
-    if (nouveauStock < ingredient.seuil_minimum) {
-      console.log(`⚠️ ALERTE : ${ingredient.nom} est sous le seuil minimum !`)
-      resultat.alertes.push({ type: 'seuil_minimum', ingredient: ingredient.nom, unite: ingredient.unite })
-    }
+  if (erreurMouvements) {
+    console.log("Erreur en enregistrant les mouvements d'historique:", erreurMouvements)
+  }
+  if (erreurVente) {
+    console.log('Erreur en enregistrant la vente:', erreurVente)
   }
 
   console.log('Vente terminée, stock mis à jour.')

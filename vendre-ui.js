@@ -27,17 +27,26 @@ async function chargerPlats() {
 function formaterAlerte(alerte) {
   if (alerte.type === 'seuil_minimum') return t('alerte_stock_bas', { ingredient: alerte.ingredient })
   if (alerte.type === 'erreur_ingredient') return t('alerte_erreur_ingredient', { message: alerte.message })
-  if (alerte.type === 'erreur_stock') return t('alerte_erreur_stock', { ingredient: alerte.ingredient, message: alerte.message })
   return ''
+}
+
+function messageErreurVente(resultat) {
+  if (resultat.erreurCode === 'stock_negatif') {
+    return t('erreur_stock_negatif', {
+      ingredient: resultat.ingredient,
+      stock: formatNombre(resultat.stock),
+      unite: libelleUnite(resultat.unite),
+    })
+  }
+  if (resultat.erreurCode === 'erreur_supabase') {
+    return `${t('erreur_prefixe')} ${resultat.erreurMessage}`
+  }
+  return t('erreur_recette_introuvable')
 }
 
 function afficherResultat(resultat) {
   if (!resultat.succes) {
-    const message =
-      resultat.erreurCode === 'erreur_supabase'
-        ? `${t('erreur_prefixe')} ${resultat.erreurMessage}`
-        : t('erreur_recette_introuvable')
-    resultatDiv.innerHTML = `<p class="erreur">${message}</p>`
+    resultatDiv.innerHTML = `<p class="erreur">${messageErreurVente(resultat)}</p>`
     return
   }
 
