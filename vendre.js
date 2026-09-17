@@ -75,6 +75,16 @@ export async function vendrePlat(platId) {
 
     console.log(`${ingredient.nom}: ${ingredient.stock_actuel} → ${nouveauStock} ${ingredient.unite}`)
 
+    // Trace du mouvement pour l'historique. Non bloquant : une vente ne doit pas échouer
+    // si cette seule écriture secondaire rate (l'ingrédient est déjà correctement déduit).
+    const { error: erreurMouvement } = await supabase
+      .from('mouvements_stock')
+      .insert({ ingredient_id: ligne.ingredient_id, quantite: -quantiteConvertie, motif: 'vente' })
+
+    if (erreurMouvement) {
+      console.log("Erreur en enregistrant le mouvement d'historique:", erreurMouvement)
+    }
+
     resultat.lignes.push({
       nom: ingredient.nom,
       avant: ingredient.stock_actuel,

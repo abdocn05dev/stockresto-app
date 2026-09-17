@@ -10,6 +10,8 @@ export default defineConfig({
         nouvelIngredient: resolve(import.meta.dirname, 'nouvel-ingredient.html'),
         nouveauPlat: resolve(import.meta.dirname, 'nouveau-plat.html'),
         nouvelleRecette: resolve(import.meta.dirname, 'nouvelle-recette.html'),
+        historique: resolve(import.meta.dirname, 'historique.html'),
+        nouveauFournisseur: resolve(import.meta.dirname, 'nouveau-fournisseur.html'),
       },
     },
   },

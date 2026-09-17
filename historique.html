@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="titre_page_vendre">Vendre un plat - StockResto</title>
+  <title data-i18n="titre_page_historique">Historique - StockResto</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,11 +12,11 @@
     <div class="header-right">
       <nav>
         <a href="index.html" data-i18n="nav_stock">Stock</a>
-        <a href="vendre.html" class="active" data-i18n="nav_vendre">Vendre un plat</a>
+        <a href="vendre.html" data-i18n="nav_vendre">Vendre un plat</a>
         <a href="nouvel-ingredient.html" data-i18n="nav_nouvel_ingredient">Nouvel ingrédient</a>
         <a href="nouveau-plat.html" data-i18n="nav_nouveau_plat">Nouveau plat</a>
         <a href="nouvelle-recette.html" data-i18n="nav_nouvelle_recette">Nouvelle recette</a>
-        <a href="historique.html" data-i18n="nav_historique">Historique</a>
+        <a href="historique.html" class="active" data-i18n="nav_historique">Historique</a>
         <a href="nouveau-fournisseur.html" data-i18n="nav_fournisseurs">Fournisseurs</a>
       </nav>
       <select id="langue-select" aria-label="Langue">
@@ -29,18 +29,25 @@
   </header>
 
   <main>
-    <h2 data-i18n="titre_vendre">Vendre un plat</h2>
-    <form id="form-vente">
-      <label for="plat-select" data-i18n="label_plat">Plat</label>
-      <select id="plat-select" required>
-        <option value="" data-i18n="chargement_plats">Chargement des plats...</option>
-      </select>
-      <button type="submit" id="btn-vendre" data-i18n="bouton_vendre">Vendre</button>
-    </form>
+    <h2 data-i18n="titre_historique">Historique des mouvements</h2>
+    <p id="message"></p>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="colonne_date">Date/Heure</th>
+          <th data-i18n="colonne_ingredient">Ingrédient</th>
+          <th data-i18n="label_quantite">Quantité</th>
+          <th data-i18n="colonne_motif">Motif</th>
+        </tr>
+      </thead>
+      <tbody id="historique-body">
+        <tr><td colspan="4" data-i18n="chargement">Chargement...</td></tr>
+      </tbody>
+    </table>
 
-    <div id="resultat"></div>
+    <button type="button" id="btn-charger-plus" class="bouton-secondaire" data-i18n="bouton_charger_plus" hidden>Charger plus</button>
   </main>
 
-  <script type="module" src="vendre-ui.js"></script>
+  <script type="module" src="historique.js"></script>
 </body>
 </html>

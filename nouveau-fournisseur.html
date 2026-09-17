@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="titre_page_nouveau_fournisseur">Nouveau fournisseur - StockResto</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1 data-i18n="app_titre">StockResto</h1>
+    <div class="header-right">
+      <nav>
+        <a href="index.html" data-i18n="nav_stock">Stock</a>
+        <a href="vendre.html" data-i18n="nav_vendre">Vendre un plat</a>
+        <a href="nouvel-ingredient.html" data-i18n="nav_nouvel_ingredient">Nouvel ingrédient</a>
+        <a href="nouveau-plat.html" data-i18n="nav_nouveau_plat">Nouveau plat</a>
+        <a href="nouvelle-recette.html" data-i18n="nav_nouvelle_recette">Nouvelle recette</a>
+        <a href="historique.html" data-i18n="nav_historique">Historique</a>
+        <a href="nouveau-fournisseur.html" class="active" data-i18n="nav_fournisseurs">Fournisseurs</a>
+      </nav>
+      <select id="langue-select" aria-label="Langue">
+        <option value="fr">🇫🇷 Français</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="ar">🇸🇦 العربية</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <h2 data-i18n="titre_nouveau_fournisseur">Ajouter un fournisseur</h2>
+    <form id="form-fournisseur">
+      <label for="nom" data-i18n="label_nom">Nom</label>
+      <input type="text" id="nom" required>
+
+      <label for="contact" data-i18n="label_contact">Téléphone</label>
+      <input type="text" id="contact">
+
+      <label for="produits" data-i18n="label_produits">Produits</label>
+      <input type="text" id="produits">
+
+      <button type="submit" id="btn-ajouter" data-i18n="bouton_ajouter_fournisseur">Ajouter le fournisseur</button>
+    </form>
+
+    <div id="resultat"></div>
+
+    <h2 data-i18n="titre_fournisseurs_existants">Fournisseurs existants</h2>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="label_nom">Nom</th>
+          <th data-i18n="label_contact">Téléphone</th>
+          <th data-i18n="label_produits">Produits</th>
+          <th data-i18n="colonne_actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="fournisseurs-body">
+        <tr><td colspan="4" data-i18n="chargement">Chargement...</td></tr>
+      </tbody>
+    </table>
+  </main>
+
+  <div id="modale-edition-fournisseur" class="modale-overlay" hidden>
+    <div class="modale" role="dialog" aria-modal="true" aria-labelledby="modale-edition-fournisseur-titre">
+      <h3 id="modale-edition-fournisseur-titre" data-i18n="titre_modifier_fournisseur">Modifier le fournisseur</h3>
+      <form id="form-modale-edition-fournisseur">
+        <label for="edition-fournisseur-nom" data-i18n="label_nom">Nom</label>
+        <input type="text" id="edition-fournisseur-nom" required>
+
+        <label for="edition-fournisseur-contact" data-i18n="label_contact">Téléphone</label>
+        <input type="text" id="edition-fournisseur-contact">
+
+        <label for="edition-fournisseur-produits" data-i18n="label_produits">Produits</label>
+        <input type="text" id="edition-fournisseur-produits">
+
+        <div id="modale-edition-fournisseur-resultat"></div>
+
+        <div class="modale-actions">
+          <button type="button" id="btn-edition-fournisseur-annuler" class="bouton-secondaire" data-i18n="bouton_annuler">Annuler</button>
+          <button type="submit" id="btn-edition-fournisseur-enregistrer" data-i18n="bouton_enregistrer">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modale-suppression-fournisseur" class="modale-overlay" hidden>
+    <div class="modale" role="dialog" aria-modal="true" aria-labelledby="modale-suppression-fournisseur-titre">
+      <h3 id="modale-suppression-fournisseur-titre" data-i18n="titre_supprimer_fournisseur">Supprimer le fournisseur</h3>
+      <div id="modale-suppression-fournisseur-contenu"></div>
+      <div class="modale-actions" id="modale-suppression-fournisseur-actions"></div>
+    </div>
+  </div>
+
+  <script type="module" src="nouveau-fournisseur.js"></script>
+</body>
+</html>
