@@ -12,6 +12,7 @@ export default defineConfig({
         nouvelleRecette: resolve(import.meta.dirname, 'nouvelle-recette.html'),
         historique: resolve(import.meta.dirname, 'historique.html'),
         nouveauFournisseur: resolve(import.meta.dirname, 'nouveau-fournisseur.html'),
+        statistiques: resolve(import.meta.dirname, 'statistiques.html'),
       },
     },
   },

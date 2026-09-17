@@ -1,7 +1,8 @@
 import { supabase } from './supabase.js'
 
 // Convertit une quantité de la recette (g, ml, unité) vers l'unité du stock (kg, L, unité)
-function convertirVersUniteStock(quantite, uniteRecette, uniteStock) {
+// Exportée pour être réutilisée par statistiques.js dans le calcul du coût des plats.
+export function convertirVersUniteStock(quantite, uniteRecette, uniteStock) {
   if (uniteRecette === uniteStock) {
     return quantite
   }
@@ -44,6 +45,14 @@ export async function vendrePlat(platId) {
   }
 
   console.log(`Recette trouvée : ${recette.length} ingrédients à déduire`)
+
+  // Trace de la vente au niveau du plat (mouvements_stock ne connaît que les ingrédients) :
+  // c'est cette table que lit la page Statistiques pour compter les ventes par plat.
+  // Non bloquant, comme les inserts de mouvements_stock plus bas.
+  const { error: erreurVente } = await supabase.from('ventes').insert({ plat_id: platId })
+  if (erreurVente) {
+    console.log('Erreur en enregistrant la vente:', erreurVente)
+  }
 
   for (const ligne of recette) {
     const { data: ingredient, error: erreurIngredient } = await supabase

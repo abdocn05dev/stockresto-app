@@ -2,10 +2,7 @@ import { supabase } from './supabase.js'
 import { formatNombre } from './format.js'
 import { t, libelleUnite } from './i18n.js'
 import { enregistrerMouvementStock } from './mouvement-stock.js'
-
-// En dessous de la moitié du seuil minimum -> critique. Entre la moitié et le seuil -> bas.
-// Ajuste ce ratio si tu veux une alerte "critique" plus ou moins sensible.
-const RATIO_CRITIQUE = 0.5
+import { getStatut } from './statut-stock.js'
 
 let dernierIngredients = []
 let ingredientCourant = null
@@ -35,16 +32,6 @@ const boutonEditionEnregistrer = document.getElementById('btn-edition-enregistre
 const modaleSuppression = document.getElementById('modale-suppression')
 const suppressionContenu = document.getElementById('modale-suppression-contenu')
 const suppressionActions = document.getElementById('modale-suppression-actions')
-
-function getStatut(stockActuel, seuilMinimum) {
-  if (stockActuel < seuilMinimum * RATIO_CRITIQUE) {
-    return { label: t('statut_critique'), classe: 'critique' }
-  }
-  if (stockActuel < seuilMinimum) {
-    return { label: t('statut_bas'), classe: 'bas' }
-  }
-  return { label: t('statut_ok'), classe: 'ok' }
-}
 
 function afficherIngredients(ingredients) {
   const corps = document.getElementById('stock-body')

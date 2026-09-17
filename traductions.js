@@ -10,6 +10,7 @@ export const TRADUCTIONS = {
     nav_nouvelle_recette: 'Nouvelle recette',
     nav_historique: 'Historique',
     nav_fournisseurs: 'Fournisseurs',
+    nav_statistiques: 'Statistiques',
 
     chargement: 'Chargement...',
     erreur_chargement: 'Erreur de chargement',
@@ -117,6 +118,16 @@ export const TRADUCTIONS = {
     titre_modifier_fournisseur: 'Modifier le fournisseur',
     titre_supprimer_fournisseur: 'Supprimer le fournisseur',
     confirmation_suppression_fournisseur: 'Êtes-vous sûr de vouloir supprimer {fournisseur} ?',
+
+    titre_page_statistiques: 'Statistiques - StockResto',
+    titre_plats_plus_vendus: 'Plats les plus vendus (30 derniers jours)',
+    colonne_nombre_ventes: 'Ventes',
+    titre_cout_plats: 'Coût des plats',
+    colonne_cout: 'Coût (DH)',
+    colonne_marge: 'Marge (DH)',
+    titre_ingredients_alerte: 'Ingrédients en alerte',
+    aucune_donnee: 'Aucune donnée pour le moment.',
+    aucune_alerte: 'Aucun ingrédient en alerte.',
   },
 
   en: {
@@ -128,6 +139,7 @@ export const TRADUCTIONS = {
     nav_nouvelle_recette: 'New Recipe',
     nav_historique: 'History',
     nav_fournisseurs: 'Suppliers',
+    nav_statistiques: 'Statistics',
 
     chargement: 'Loading...',
     erreur_chargement: 'Loading error',
@@ -235,6 +247,16 @@ export const TRADUCTIONS = {
     titre_modifier_fournisseur: 'Edit Supplier',
     titre_supprimer_fournisseur: 'Delete Supplier',
     confirmation_suppression_fournisseur: 'Are you sure you want to delete {fournisseur}?',
+
+    titre_page_statistiques: 'Statistics - StockResto',
+    titre_plats_plus_vendus: 'Best-Selling Dishes (last 30 days)',
+    colonne_nombre_ventes: 'Sales',
+    titre_cout_plats: 'Dish Costs',
+    colonne_cout: 'Cost (DH)',
+    colonne_marge: 'Margin (DH)',
+    titre_ingredients_alerte: 'Ingredients on Alert',
+    aucune_donnee: 'No data yet.',
+    aucune_alerte: 'No ingredients on alert.',
   },
 
   es: {
@@ -246,6 +268,7 @@ export const TRADUCTIONS = {
     nav_nouvelle_recette: 'Nueva Receta',
     nav_historique: 'Historial',
     nav_fournisseurs: 'Proveedores',
+    nav_statistiques: 'Estadísticas',
 
     chargement: 'Cargando...',
     erreur_chargement: 'Error de carga',
@@ -353,6 +376,16 @@ export const TRADUCTIONS = {
     titre_modifier_fournisseur: 'Editar Proveedor',
     titre_supprimer_fournisseur: 'Eliminar Proveedor',
     confirmation_suppression_fournisseur: '¿Seguro que quieres eliminar {fournisseur}?',
+
+    titre_page_statistiques: 'Estadísticas - StockResto',
+    titre_plats_plus_vendus: 'Platos Más Vendidos (últimos 30 días)',
+    colonne_nombre_ventes: 'Ventas',
+    titre_cout_plats: 'Costo de los Platos',
+    colonne_cout: 'Costo (DH)',
+    colonne_marge: 'Margen (DH)',
+    titre_ingredients_alerte: 'Ingredientes en Alerta',
+    aucune_donnee: 'Sin datos por el momento.',
+    aucune_alerte: 'Ningún ingrediente en alerta.',
   },
 
   ar: {
@@ -364,6 +397,7 @@ export const TRADUCTIONS = {
     nav_nouvelle_recette: 'وصفة جديدة',
     nav_historique: 'السجل',
     nav_fournisseurs: 'الموردون',
+    nav_statistiques: 'الإحصائيات',
 
     chargement: 'جارٍ التحميل...',
     erreur_chargement: 'خطأ في التحميل',
@@ -471,5 +505,15 @@ export const TRADUCTIONS = {
     titre_modifier_fournisseur: 'تعديل المورد',
     titre_supprimer_fournisseur: 'حذف المورد',
     confirmation_suppression_fournisseur: 'هل أنت متأكد من حذف {fournisseur}؟',
+
+    titre_page_statistiques: 'الإحصائيات - StockResto',
+    titre_plats_plus_vendus: 'الأطباق الأكثر مبيعًا (آخر 30 يومًا)',
+    colonne_nombre_ventes: 'المبيعات',
+    titre_cout_plats: 'تكلفة الأطباق',
+    colonne_cout: 'التكلفة (درهم)',
+    colonne_marge: 'الهامش (درهم)',
+    titre_ingredients_alerte: 'مكوّنات في حالة تنبيه',
+    aucune_donnee: 'لا توجد بيانات حاليًا.',
+    aucune_alerte: 'لا يوجد أي مكوّن في حالة تنبيه.',
   },
 }
