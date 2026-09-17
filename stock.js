@@ -3,6 +3,8 @@ import { formatNombre } from './format.js'
 import { t, libelleUnite } from './i18n.js'
 import { enregistrerMouvementStock } from './mouvement-stock.js'
 import { getStatut } from './statut-stock.js'
+import { appliquerEtiquettesTableau } from './tableau-responsive.js'
+import './nav.js'
 
 let dernierIngredients = []
 let ingredientCourant = null
@@ -54,6 +56,8 @@ function afficherIngredients(ingredients) {
     `
     corps.appendChild(ligne)
   }
+
+  appliquerEtiquettesTableau('stock-body')
 }
 
 async function chargerIngredients() {

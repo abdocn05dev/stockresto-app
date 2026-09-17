@@ -1,5 +1,7 @@
 import { supabase } from './supabase.js'
 import { t } from './i18n.js'
+import { appliquerEtiquettesTableau } from './tableau-responsive.js'
+import './nav.js'
 
 const form = document.getElementById('form-fournisseur')
 const bouton = document.getElementById('btn-ajouter')
@@ -39,6 +41,8 @@ function afficherFournisseurs(fournisseurs) {
     `
     corps.appendChild(ligne)
   }
+
+  appliquerEtiquettesTableau('fournisseurs-body')
 }
 
 async function chargerFournisseurs() {

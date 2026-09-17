@@ -1,6 +1,8 @@
 import { supabase } from './supabase.js'
 import { formatNombre } from './format.js'
 import { t, libelleUnite, getLangue } from './i18n.js'
+import { appliquerEtiquettesTableau } from './tableau-responsive.js'
+import './nav.js'
 
 const TAILLE_PAGE = 100
 
@@ -58,17 +60,19 @@ function afficherMouvements() {
     `
     corpsTableau.appendChild(ligne)
   }
+
+  appliquerEtiquettesTableau('historique-body')
 }
 
-async function chargerPage() {
-  boutonChargerPlus.disabled = true
-
-  const { data, error } = await supabase
+function recupererPage() {
+  return supabase
     .from('mouvements_stock')
     .select('id, ingredient_id, quantite, motif, created_at')
     .order('created_at', { ascending: false })
     .range(decalage, decalage + TAILLE_PAGE - 1)
+}
 
+function traiterPage({ data, error }) {
   if (error) {
     message.textContent = `${t('erreur_chargement')} : ${error.message}`
     message.className = 'erreur'
@@ -86,10 +90,18 @@ async function chargerPage() {
   boutonChargerPlus.disabled = false
 }
 
+async function chargerPage() {
+  boutonChargerPlus.disabled = true
+  traiterPage(await recupererPage())
+}
+
 boutonChargerPlus.addEventListener('click', chargerPage)
 
 // Un changement de langue ne nécessite pas un nouvel appel réseau : on réaffiche juste les mêmes données.
 window.addEventListener('langue-changee', afficherMouvements)
 
-await chargerIngredients()
-await chargerPage()
+// Les ingrédients (pour les noms) et la première page de mouvements sont indépendants :
+// chargés en parallèle plutôt que l'un après l'autre.
+boutonChargerPlus.disabled = true
+const [, resultatPremierePage] = await Promise.all([chargerIngredients(), recupererPage()])
+traiterPage(resultatPremierePage)

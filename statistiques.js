@@ -3,6 +3,8 @@ import { formatNombre } from './format.js'
 import { t, libelleUnite } from './i18n.js'
 import { convertirVersUniteStock } from './vendre.js'
 import { getStatut } from './statut-stock.js'
+import { appliquerEtiquettesTableau } from './tableau-responsive.js'
+import './nav.js'
 
 const JOURS_FENETRE_VENTES = 30
 const LIMITE_PLATS_VENDUS = 10
@@ -20,6 +22,7 @@ function afficherVentes(lignes) {
   corps.innerHTML = lignes.length
     ? lignes.map((ligne) => `<tr><td>${ligne.nom}</td><td>${ligne.nombre}</td></tr>`).join('')
     : `<tr><td colspan="2">${t('aucune_donnee')}</td></tr>`
+  appliquerEtiquettesTableau('ventes-body')
 }
 
 async function chargerVentesParPlat() {
@@ -27,12 +30,17 @@ async function chargerVentesParPlat() {
   const depuis = new Date()
   depuis.setDate(depuis.getDate() - JOURS_FENETRE_VENTES)
 
-  const { data: ventes, error } = await supabase
-    .from('ventes')
-    .select('plat_id')
-    .gte('created_at', depuis.toISOString())
+  // La liste des plats ne dépend pas des ventes : on la charge en parallèle (tous les plats,
+  // pas seulement ceux vendus) plutôt que d'attendre le résultat des ventes pour la filtrer.
+  const [
+    { data: ventes, error },
+    { data: plats, error: erreurPlats },
+  ] = await Promise.all([
+    supabase.from('ventes').select('plat_id').gte('created_at', depuis.toISOString()),
+    supabase.from('plats').select('id, nom'),
+  ])
 
-  if (error) {
+  if (error || erreurPlats) {
     corps.innerHTML = `<tr><td colspan="2" class="erreur">${t('erreur_chargement')}</td></tr>`
     return
   }
@@ -45,16 +53,6 @@ async function chargerVentesParPlat() {
   if (compteParPlat.size === 0) {
     dernieresVentes = []
     afficherVentes(dernieresVentes)
-    return
-  }
-
-  const { data: plats, error: erreurPlats } = await supabase
-    .from('plats')
-    .select('id, nom')
-    .in('id', [...compteParPlat.keys()])
-
-  if (erreurPlats) {
-    corps.innerHTML = `<tr><td colspan="2" class="erreur">${t('erreur_chargement')}</td></tr>`
     return
   }
 
@@ -86,29 +84,25 @@ function afficherCouts(lignes) {
         )
         .join('')
     : `<tr><td colspan="4">${t('aucune_donnee')}</td></tr>`
+  appliquerEtiquettesTableau('cout-body')
 }
 
 async function chargerCoutPlats() {
   const corps = document.getElementById('cout-body')
 
-  const { data: plats, error: erreurPlats } = await supabase.from('plats').select('id, nom, prix_vente')
-  if (erreurPlats) {
-    corps.innerHTML = `<tr><td colspan="4" class="erreur">${t('erreur_chargement')}</td></tr>`
-    return
-  }
+  // Les 3 tables sont indépendantes les unes des autres : un seul aller-retour groupé
+  // au lieu de 3 requêtes l'une après l'autre (même optimisation que vendre.js).
+  const [
+    { data: plats, error: erreurPlats },
+    { data: recettes, error: erreurRecettes },
+    { data: ingredients, error: erreurIngredients },
+  ] = await Promise.all([
+    supabase.from('plats').select('id, nom, prix_vente'),
+    supabase.from('recettes').select('plat_id, ingredient_id, quantite, unite'),
+    supabase.from('ingredients').select('id, unite, prix_achat'),
+  ])
 
-  const { data: recettes, error: erreurRecettes } = await supabase
-    .from('recettes')
-    .select('plat_id, ingredient_id, quantite, unite')
-  if (erreurRecettes) {
-    corps.innerHTML = `<tr><td colspan="4" class="erreur">${t('erreur_chargement')}</td></tr>`
-    return
-  }
-
-  const { data: ingredients, error: erreurIngredients } = await supabase
-    .from('ingredients')
-    .select('id, unite, prix_achat')
-  if (erreurIngredients) {
+  if (erreurPlats || erreurRecettes || erreurIngredients) {
     corps.innerHTML = `<tr><td colspan="4" class="erreur">${t('erreur_chargement')}</td></tr>`
     return
   }
@@ -168,6 +162,7 @@ function afficherAlertes(ingredients) {
         })
         .join('')
     : `<tr><td colspan="4">${t('aucune_alerte')}</td></tr>`
+  appliquerEtiquettesTableau('alertes-body')
 }
 
 async function chargerAlertesStock() {

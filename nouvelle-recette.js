@@ -1,6 +1,8 @@
 import { supabase } from './supabase.js'
 import { formatNombre } from './format.js'
 import { t, libelleUnite } from './i18n.js'
+import { appliquerEtiquettesTableau } from './tableau-responsive.js'
+import './nav.js'
 
 const form = document.getElementById('form-recette')
 const selectPlat = document.getElementById('plat')
@@ -122,6 +124,8 @@ function afficherRecettes() {
     `
     corps.appendChild(rangee)
   }
+
+  appliquerEtiquettesTableau('recettes-body')
 }
 
 // Un changement de langue ne nécessite pas un nouvel appel réseau : on réaffiche juste les mêmes données.

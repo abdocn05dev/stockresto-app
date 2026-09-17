@@ -1,5 +1,6 @@
 import { supabase } from './supabase.js'
 import { t } from './i18n.js'
+import './nav.js'
 
 const form = document.getElementById('form-ingredient')
 const bouton = document.getElementById('btn-ajouter')

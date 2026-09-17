@@ -2,6 +2,7 @@ import { supabase } from './supabase.js'
 import { vendrePlat } from './vendre.js'
 import { formatNombre } from './format.js'
 import { t, libelleUnite } from './i18n.js'
+import './nav.js'
 
 const select = document.getElementById('plat-select')
 const form = document.getElementById('form-vente')

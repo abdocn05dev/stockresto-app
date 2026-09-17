@@ -1,6 +1,8 @@
 import { supabase } from './supabase.js'
 import { formatNombre } from './format.js'
 import { t } from './i18n.js'
+import { appliquerEtiquettesTableau } from './tableau-responsive.js'
+import './nav.js'
 
 const form = document.getElementById('form-plat')
 const selectCategorie = document.getElementById('categorie')
@@ -53,6 +55,8 @@ function afficherPlats(plats) {
     `
     corps.appendChild(ligne)
   }
+
+  appliquerEtiquettesTableau('plats-body')
 }
 
 // Un seul appel réseau alimente à la fois le select de catégories et le tableau des plats.

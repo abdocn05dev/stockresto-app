@@ -73,6 +73,10 @@ nav a.active {
   font-weight: 600;
 }
 
+.nav-toggle {
+  display: none;
+}
+
 #langue-select {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -465,4 +469,141 @@ button.lien-detail:hover {
 .bouton-danger:hover:not(:disabled) {
   background: #7a2620;
   border-color: #7a2620;
+}
+
+/* ---------- Mobile (< 768px) ---------- */
+
+@media (max-width: 767px) {
+  /* Nav : menu hamburger au lieu des liens en ligne, pour éviter le retour à la ligne sur 3 lignes. */
+
+  header {
+    position: relative;
+    padding: 0.85rem 1rem;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 1.25rem;
+    line-height: 1;
+    border-radius: 4px;
+    cursor: pointer;
+    order: 2;
+  }
+
+  header h1 {
+    order: 1;
+  }
+
+  .header-right {
+    display: none;
+    order: 3;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    margin-top: 0.85rem;
+  }
+
+  .header-right.ouvert {
+    display: flex;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  nav a {
+    margin-inline-start: 0;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  nav a.active {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-inline-start: 3px solid #fff;
+    padding-inline-start: 0.35rem;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  #langue-select {
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
+  /* Tableaux : une carte empilée par ligne, avec le libellé de colonne à côté de chaque valeur. */
+
+  table {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+  }
+
+  tbody tr {
+    margin-bottom: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  td {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    text-align: end;
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr td:last-child {
+    border-bottom: none;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    text-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Lignes sans data-label (chargement, erreur, "aucune donnée") : pas d'étiquette, alignées à gauche. */
+  td:not([data-label]) {
+    justify-content: flex-start;
+    text-align: start;
+  }
+
+  td:not([data-label])::before {
+    content: none;
+  }
 }
